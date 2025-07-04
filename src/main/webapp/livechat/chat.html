@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<script src="util.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<style>
+		@font-face {
+		    font-family: 'PFStardustS';
+		    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/PFStardustS.woff2') format('woff2');
+		    font-weight: 400;
+		    font-style: normal;
+		}
+		
+		* {
+			font-family : 'PFStardustS';
+			
+		}
+		body {
+		padding-left : 10%;
+			padding-right : 10%;
+		}
+		
+		.chat_container {
+			width : 50%;
+			height : 500px;
+			border-radius : 15px 15px 0 15px;
+			/* box-shadow : 4px 0 2px #cbcbcb; */
+			margin : auto;
+			float: left;
+		}
+		
+		.chat {
+			width : auto;
+			height : 340px;
+			padding : 4%;
+			overflow-y: auto;
+			background : lightblue;
+			/* box-shadow : 4px 0 2px #cbcbcb; */
+		}
+		.vote_container {
+			width : 50%;
+			margin : auto;
+			margin-bottom : 15%;
+			float : right;
+		}
+		
+		
+		#content {
+			width : 90%;
+			float : left;
+			font-size : 20px;
+		}
+		
+		#send_button {
+			width : 10%;
+			float : right;
+			background : #7d7064;
+			color : white;
+			border-radius : 0 0 15px 0;
+		}
+		#content, #send_button {
+			height : 35px;
+			padding: 0;
+		    margin: 0;
+		    box-sizing: border-box;
+		    border : none;
+		    /* box-shadow : 4px 4px 2px #cbcbcb; */
+		}
+		
+		.vote_content {
+			font-size : 20px;
+			padding : 10px;
+			background : grey;
+			color : white;
+			text-align : center;
+			margin-bottom : 2%;
+			border-radius : 0 0 10px 10px;
+		}
+		.vote {
+			height : 170px;
+			margin-left : 5%;
+			overflow-y: auto;
+			
+		}
+		.vote button {
+			font-size : 20px;
+			padding: 5px 9px 5px 9px;	
+			background : #ea7238;
+			color : white;		
+			border : none;
+			font-weight : bold;
+			box-shadow : 1px 1px 2px grey;
+		}
+		.vote_title {
+		  background: lightgreen;
+		  font-size: 25px;
+		  font-weight: bold;
+		  text-align: center;
+		  margin-bottom: 0;
+		  margin-top : 0;
+		  position: relative;
+		}
+		
+		.vote_title button {
+		  position: absolute;
+		  right: 0;
+		  top: 50%;
+		  transform: translateY(-50%);
+		  height: 100%;
+		  font-size: 16px;
+		  padding: 0 10px;
+		  box-shadow : none;
+		}
+		.vote button:hover{
+			opacity : 0.7;
+		}
+		
+		.my_chat_date {
+			margin : 1% 1% 1% auto;
+			color : grey;
+			width : fit-content;
+			font-size : 10px;
+			padding-right : 15px;
+		}
+		
+		.my_chat {
+			width : fit-content;
+			border-radius : 10px;
+			box-shadow :  3px 3px 2px #4a3b37;
+			padding : 5px 15px 5px 15px;
+			font-size : 20px;
+			background : #7b7b7b;
+			color : white;
+			margin : 1% 1% 0 auto;
+			word-break: break-word;
+  			overflow-wrap: break-word;
+		}
+		
+		.other_chat_date {
+			margin : 1% auto 0 0;
+			color : grey;
+			width : fit-content;
+			font-size : 10px;
+			padding-right : 15px;
+		}
+		
+		.other_chat {
+			background : white;
+			width : fit-content;
+			border-radius : 10px;
+			box-shadow :  3px 3px 2px #4a3b37;
+			padding : 5px 15px 5px 15px;
+			font-size : 20px;
+			margin : 1% auto 0 0;
+		}
+		
+		#chat_title {
+		    text-align: center;
+		    height: 40px;
+		    line-height: 40px;
+		    font-weight: bold;
+		    font-size: 20px;
+		    background: #ea7238;
+		    border-radius : 15px 15px 0 0;
+		}
+		#general_info {
+			text-align : center;
+			font-weight : bold;
+			font-size : 40px;
+			margin-bottom : 7px;
+		}
+		
+		
+	</style>
+</head>
+<body>
+
+<div id="general_info">
+</div>
+
+<div class="chat_container">
+	<div id="chat_title">오티아이 4기 [익명]</div>
+	<section class="chat">
+	
+	</section>
+	<div class="senders">
+		<form id="chat_form" method="post" action="">
+			<input type="text" id="content" name="content" placeholder="내용을 입력하세요.">
+			<input type="submit" id="send_button" value="전송">
+		</form>
+	</div>
+	
+</div>
+
+<div class="vote_container">
+	<section class="vote">
+		
+	</section>
+	
+</div>
+
+
+
+<script>
+const gInfo = document.querySelector('#general_info');
+getTime(gInfo);
+
+setInterval(function(){
+	getTime(gInfo);
+}, 1000);
+
+let existingVoteIds = new Set();
+let myIp = getCookie("name");
+if(myIp == null){
+	let value = parseInt(Math.random()*1000000);
+	setCookie("name",value, 400);
+	myIp = value;
+}
+getAllChatHistory();
+
+$(document).ready(function () {
+    $('#chat_form').on('submit', function (event) {
+      event.preventDefault();
+      let isVote = false;
+      let content = $('#content').val().trim();
+      
+      let date = getTimeStamp(new Date());
+      if (content !== '') {
+    	  if(content.substring(0,3) == '/투표'){
+          	  content = '/vote/'+ content.substring(4, content.length) +"/vote/";
+          	  $('#content').val('');
+          	  console.log("투표 활성화");
+          	  isVote = true;
+            }
+    	  let parsedContent = content;
+    	if(isVote)
+    		parsedContent = "투표가 생성되었습니다 - "+parseVote(content);  
+        addChatFromMe(parsedContent, getTimeStamp(new Date()), isVote);
+        
+        let type = isVote ? "vote" : "no_vote";
+        console.log("isVote: " + isVote);
+        content = myIp+"/ip/" + content;
+        $('#content').val('');
+
+        
+        $.ajax({
+          url: 'http://192.168.2.236:8088/ChatApp/chat?type='+type,
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ content: content, date_info : date }),
+          success: function (res) {
+            console.log('Saved to server:', res);
+          },
+          error: function (xhr, status, err) {
+            console.error('Error:', err);
+          }
+        });
+      }
+    });
+  });
+let lastTimestamp = null; 
+
+function getAllChatHistory() {
+$.ajax({
+ url: 'http://192.168.2.236:8088/ChatApp/chat',
+ method: 'GET',
+ success: function (data) {
+   data.forEach(function (msg) {
+	   if(msg.content != undefined && msg.content != ''){
+		   //console.log(msg.content);
+			 let arr = msg.content.split("/ip/");
+			 let isVote = false;
+			 
+			 let ip="";
+			 let content = "";
+			 if(arr.length == 1){
+				 content = msg.content;
+			 }else{
+				 ip = arr[0];
+				 //console.log(ip);
+				 content = arr[1];
+			 }
+			 
+			 if(isVoteCheck(content)){
+				 //console.log("isVoteCheckTRUE: "+content);
+				 isVote = true;
+				 content = "투표가 생성되었습니다 - "+parseVote(content);
+			 }
+				 
+			 
+			
+			 if(ip != myIp || ip == ''){
+				 addChatFromOthers(content, msg.date_info, isVote);
+			 }else
+		     	addChatFromMe(content, msg.date_info, isVote);
+			 
+		     lastTimestamp = msg.date_info; 
+	   }
+	   if(msg.vote_content !== undefined){
+		   console.log("vote:: " + msg.vote_content);
+		   addVote(msg.vote_content, msg.vote_date_info, msg.vote_total, msg.vote_id);
+	   }
+			 
+	 
+   });
+ },
+ error: function (err) {
+   console.error('Error loading chat:', err);
+ }
+});
+}
+
+function getNewChatsOnly() {
+
+
+$.ajax({
+ url: 'http://192.168.2.236:8088/ChatApp/chat?after=' + encodeURIComponent(lastTimestamp),
+ method: 'GET',
+ success: function (data) {
+	 let currentIds = new Set();
+   data.forEach(function (msg) {
+	   if(msg.content != undefined){
+		   let arr = msg.content.split("/ip/");
+		   let isVote = false;
+			 console.log(arr);
+			 let ip="";
+			 let content = "";
+			 if(arr.length == 1){
+				 content = msg.content;
+			 }else{
+				 ip = arr[0];
+				 content = arr[1];
+			 }
+			 if(isVoteCheck(content)){
+				 console.log("content_before_parse: "+content);
+				 isVote = true;
+				 content = "투표가 생성되었습니다 - "+parseVote(content);
+				 console.log("content_after_parse: "+content);
+			 }
+			 
+			 if(ip != myIp || ip == ""){
+				 addChatFromOthers(content, msg.date_info, isVote);
+			 }
+	     lastTimestamp = msg.date_info;
+		   
+	   }
+	   if (msg.vote_content !== undefined) {
+	          currentIds.add(msg.vote_id);
+	          if (!existingVoteIds.has(msg.vote_id)) {
+	            addVote(msg.vote_content, msg.vote_date_info, msg.vote_total, msg.vote_id);
+	          }
+	        }
+
+	        if (msg.vote_refresh !== undefined) {
+	          currentIds.add(msg.vote_id); 
+	          modifyVote(msg.vote_id, msg.vote_total);
+	        }
+   });
+   
+   existingVoteIds.forEach(oldId => {
+       if (!currentIds.has(oldId)) {
+         console.log("Vote removed: " + oldId);
+         const voteDiv = document.getElementById("vote_" + oldId);
+         if (voteDiv) {
+           const voteTitle = voteDiv.previousElementSibling; 
+           if (voteTitle) voteTitle.remove();
+           voteDiv.remove();
+         }
+       }
+     });
+
+   
+     existingVoteIds = currentIds;
+ },
+ error: function (err) {
+   console.error('Error loading new messages:', err);
+ }
+});
+}
+setInterval(getNewChatsOnly, 400);  
+
+function isVoteCheck(cont){
+	return cont.substring(0,6) == "/vote/"
+	 && cont.substring(cont.length-6,cont.length) == "/vote/";
+}
+function parseVote(cont){
+	return cont.substring(6,cont.length-6);
+}
+
+
+function setCookie(name, value, days) {
+	  const expires = new Date(Date.now() + days*24*60*60*1000).toUTCString();
+	  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+	}
+	
+function getCookie(name) {
+	  const cookies = document.cookie.split('; ');
+	  for (const c of cookies) {
+	    const [key, val] = c.split('=');
+	    if (key === name) return decodeURIComponent(val);
+	  }
+	  return null;
+}
+
+
+  
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Ignore compiled classes
+*.class
+
+# Ignore build directory
+build/
+
+# Eclipse settings
+.settings/
+.project
+.classpath
+
+# OS-specific files
+.DS_Store
+
+# Other typical Java junk
+target/
+bin/
