@@ -126,7 +126,7 @@ public class ChatServlet extends HttpServlet {
 	    String sql;
 	    String sql2;
 	    String sql3 = "SELECT idx, vote_total FROM vote";
-	    if (after != null && !after.isEmpty()) {
+	    if (after != null && !after.equals("null") && !after.isEmpty()) {
 	        sql = "SELECT content, date_info FROM chat_history WHERE date_info > ? ORDER BY date_info ASC";
 	        sql2 = "SELECT idx, vote_content, date_info, vote_total FROM vote WHERE date_info > ? ORDER BY date_info ASC";
 	    } else {
