@@ -199,8 +199,9 @@ public class ChatServlet extends HttpServlet {
 	        out.print(chatArray.toString());
 	        out.flush();
 	    } catch (Exception e) {
-	    	e.printStackTrace(); // log to server logs
-	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+	    	e.printStackTrace(); // logs to docker log
+	        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	        response.getWriter().write("Server error: " + e.getMessage());
 	    }
 	}
 }
