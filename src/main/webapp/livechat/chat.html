@@ -246,7 +246,7 @@ $(document).ready(function () {
 
         
         $.ajax({
-          url: '/ChatApp/chat?type='+type,
+          url: 'http://localhost:8888/ChatApp/chat?type='+type,
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify({ content: content, date_info : date }),
@@ -264,7 +264,7 @@ let lastTimestamp = null;
 
 function getAllChatHistory() {
 $.ajax({
- url: '/ChatApp/chat',
+ url: 'http://localhost:8888/ChatApp/chat',
  method: 'GET',
  success: function (data) {
    data.forEach(function (msg) {
@@ -316,7 +316,7 @@ function getNewChatsOnly() {
 
 
 $.ajax({
- url: '/ChatApp/chat?after=' + encodeURIComponent(lastTimestamp),
+ url: 'http://localhost:8888/ChatApp/chat?after=' + encodeURIComponent(lastTimestamp),
  method: 'GET',
  success: function (data) {
 	 let currentIds = new Set();

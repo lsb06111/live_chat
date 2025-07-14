@@ -45,7 +45,7 @@ function removeVote(idx){
 	console.log(typeof idx);
 	
 	$.ajax({
-		  url: '/ChatApp/chat?type=remove_vote',
+		  url: 'http://localhost:8888/ChatApp/chat?type=remove_vote',
 		  type: 'POST',
 		  contentType: 'application/json',
 		  data: JSON.stringify({content:"", date_info:"", id : idx, vote_total : ""}),
@@ -103,7 +103,7 @@ function doVote(button, date, id, items, status){
 		
 		
 		$.ajax({
-          url: '/ChatApp/chat?type=add_vote',
+          url: 'http://localhost:8888/ChatApp/chat?type=add_vote',
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify({content:"", date_info:"", id : id, vote_total : totals}),
