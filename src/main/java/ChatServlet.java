@@ -199,7 +199,8 @@ public class ChatServlet extends HttpServlet {
 	        out.print(chatArray.toString());
 	        out.flush();
 	    } catch (Exception e) {
-	        response.sendError(500, "DB error: " + e.getMessage());
+	    	e.printStackTrace(); // log to server logs
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
 	    }
 	}
 }
