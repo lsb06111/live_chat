@@ -1,0 +1,25 @@
+
+services:
+  chatapp:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=dltnqls11
+      - DB_NAME=test_for_chat
+
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=dltnqls11
+      - MYSQL_DATABASE=test_for_chat
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:

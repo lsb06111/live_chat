@@ -64,7 +64,7 @@ public class ChatServlet extends HttpServlet {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test_for_chat", "root", "dltnqls11");
+                "jdbc:mysql://" + System.getenv("DB_HOST") + ":3306/" + System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD"));
 
             if(!addVote) {
             	PreparedStatement ps = conn.prepareStatement("INSERT INTO chat_history (content, date_info) VALUES (?, ?)");
@@ -137,7 +137,7 @@ public class ChatServlet extends HttpServlet {
 	    try {
 	        Class.forName("com.mysql.cj.jdbc.Driver");
 	        Connection conn = DriverManager.getConnection(
-	            "jdbc:mysql://localhost:3306/test_for_chat", "root", "dltnqls11");
+	            "jdbc:mysql://" + System.getenv("DB_HOST") + ":3306/" + System.getenv("DB_NAME"), System.getenv("DB_USER"), System.getenv("DB_PASSWORD"));
 
 	        PreparedStatement ps = conn.prepareStatement(sql);
 	        

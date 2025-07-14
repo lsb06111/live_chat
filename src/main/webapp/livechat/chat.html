@@ -187,7 +187,7 @@
 	</section>
 	<div class="senders">
 		<form id="chat_form" method="post" action="">
-			<input type="text" id="content" name="content" placeholder="내용을 입력하세요.">
+			<input type="text" id="content" name="content" placeholder="내용을 입력하세요." autocomplete="off">
 			<input type="submit" id="send_button" value="전송">
 		</form>
 	</div>
@@ -246,7 +246,7 @@ $(document).ready(function () {
 
         
         $.ajax({
-          url: 'http://192.168.2.236:8088/ChatApp/chat?type='+type,
+          url: '/ChatApp/chat?type='+type,
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify({ content: content, date_info : date }),
@@ -264,7 +264,7 @@ let lastTimestamp = null;
 
 function getAllChatHistory() {
 $.ajax({
- url: 'http://192.168.2.236:8088/ChatApp/chat',
+ url: '/ChatApp/chat',
  method: 'GET',
  success: function (data) {
    data.forEach(function (msg) {
@@ -316,7 +316,7 @@ function getNewChatsOnly() {
 
 
 $.ajax({
- url: 'http://192.168.2.236:8088/ChatApp/chat?after=' + encodeURIComponent(lastTimestamp),
+ url: '/ChatApp/chat?after=' + encodeURIComponent(lastTimestamp),
  method: 'GET',
  success: function (data) {
 	 let currentIds = new Set();
