@@ -1,23 +1,20 @@
 FROM tomcat:9.0
 
-# Set working directory inside container
-WORKDIR /build
-
-# Copy source code
-COPY src/main/java ./src
-COPY src/main/webapp ./webapp
-
-# Create output folder for compiled classes
+# Create build directory
 RUN mkdir -p /build/classes
 
-# Compile Java files, include all libs in classpath
-RUN javac -d /build/classes \
-    -cp "/build/webapp/WEB-INF/lib/*" \
-    $(find ./src -name "*.java")
+# Copy servlet and libraries
+COPY src/main/java/ChatServlet.java /build/src/
+COPY src/main/webapp/WEB-INF/lib /build/lib
 
-# Create expected webapp structure for deployment
-RUN mkdir -p /usr/local/tomcat/webapps/ChatApp/WEB-INF/classes && \
-    cp -r /build/classes/* /usr/local/tomcat/webapps/ChatApp/WEB-INF/classes && \
-    cp -r /build/webapp/* /usr/local/tomcat/webapps/ChatApp/
+# Compile ChatServlet.java
+RUN javac -d /build/classes -cp "/build/lib/*" /build/src/ChatServlet.java
 
-EXPOSE 8080
+# Copy static web content
+COPY src/main/webapp /usr/local/tomcat/webapps/ChatApp
+
+# Copy compiled classes
+COPY /build/classes /usr/local/tomcat/webapps/ChatApp/WEB-INF/classes
+
+# Copy libs into WEB-INF/lib
+COPY src/main/webapp/WEB-INF/lib /usr/local/tomcat/webapps/ChatApp/WEB-INF/lib
