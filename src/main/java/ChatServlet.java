@@ -121,7 +121,7 @@ public class ChatServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 	    JSONArray chatArray = new JSONArray();
-
+	    System.out.println(">>> ChatServlet.doGet() was triggered");
 	    String after = request.getParameter("after");
 	    String sql;
 	    String sql2;
