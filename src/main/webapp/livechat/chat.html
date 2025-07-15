@@ -35,12 +35,14 @@
 		}
 		
 		.chat_container {
-			width : 50%;
-			height : 500px;
-			border-radius : 15px 15px 0 15px;
-			/* box-shadow : 4px 0 2px #cbcbcb; */
-			margin : auto;
-			float: left;
+			width: 35%;
+		    height: 500px;
+		    border-radius: 15px 15px 0 15px;
+		    position: absolute; /* Required for moving it */
+		    top: 100px; /* adjust as needed */
+		    left: 100px; /* adjust as needed */
+		    
+		    z-index: 10;
 		}
 		
 		.chat {
@@ -52,10 +54,13 @@
 			/* box-shadow : 4px 0 2px #cbcbcb; */
 		}
 		.vote_container {
-			width : 50%;
-			margin : auto;
-			margin-bottom : 15%;
-			float : right;
+			width: 35%;
+		    height: auto;
+		    position: absolute; /* necessary for dragging */
+		    top: 100px;  /* you can adjust as needed */
+		    right: 100px;
+		    
+		    z-index: 10;
 		}
 		
 		
@@ -124,6 +129,7 @@
 		  position: relative;
 		  padding : 3px 0 3px 0;
 		  color : white;
+		  cursor: move;
 		}
 		
 		.vote_title button {
@@ -191,6 +197,7 @@
 		    background: #7b7b7b;
 		    color : white;
 		    border-radius : 15px 15px 0 0;
+		    cursor: move;
 		}
 		#general_info {
 			text-align : center;
@@ -430,7 +437,77 @@ function getCookie(name) {
 	  }
 	  return null;
 }
+let isDragging = false, offset = {};
+let isDraggingVote = false, offsetVote = {};
+let positionChat = {}, positionVote = {};
 
+$('#chat_title').on('mousedown', function (e) {
+    isDragging = true;
+    offset = {
+        x: e.clientX - $('.chat_container').offset().left,
+        y: e.clientY - $('.chat_container').offset().top
+    };
+});
+
+$('.vote_container').on('mousedown', function (e) {
+	if ($(e.target).is('button')) return;
+	isDraggingVote = true;
+	offsetVote = {
+        x: e.clientX - $('.vote_container').offset().left,
+        y: e.clientY - $('.vote_container').offset().top
+    };
+});
+
+$(document).on('mousemove', function (e) {
+    if (isDragging) {
+        $('.chat_container').css({
+            left: e.clientX - offset.x,
+            top: e.clientY - offset.y
+        });
+        positionChat.x = e.clientX - offset.x;
+        positionChat.y = e.clientY - offset.y;
+    }
+    if (isDraggingVote) {
+        $('.vote_container').css({
+            left: e.clientX - offsetVote.x,
+            top: e.clientY - offsetVote.y
+        });
+        positionVote.x = e.clientX - offsetVote.x;
+        positionVote.y = e.clientY - offsetVote.y;
+    }
+});
+
+$(document).on('mouseup', function () {
+	if(isDragging)
+		localStorage.setItem("chatOffset",[positionChat.x,positionChat.y]);
+	if(isDraggingVote)
+		localStorage.setItem("voteOffset",[positionVote.x, positionVote.y]);
+    isDragging = false;
+    isDraggingVote = false;
+});
+
+
+function loadLocal(){
+	
+	if(localStorage.chatOffset != undefined){
+		const offsets = localStorage.chatOffset.split(',');
+		console.log(offsets);
+		$('.chat_container').css({
+            left: offsets[0] + 'px',
+            top: offsets[1] + 'px'
+        });
+	}
+	if(localStorage.voteOffset != undefined){
+		const offsets = localStorage.voteOffset.split(',');
+		console.log(offsets);
+		
+		$('.vote_container').css({
+            left: offsets[0] + 'px',
+            top: offsets[1] + 'px'
+        });
+	}
+}
+loadLocal();
 
   
 </script>
