@@ -231,7 +231,6 @@ $(document).ready(function () {
     	  if(content.substring(0,3) == '/투표'){
           	  content = '/vote/'+ content.substring(4, content.length) +"/vote/";
           	  $('#content').val('');
-          	  console.log("투표 활성화");
           	  isVote = true;
             }
     	  let parsedContent = content;
@@ -240,7 +239,6 @@ $(document).ready(function () {
         addChatFromMe(parsedContent, getTimeStamp(new Date()), isVote);
         
         let type = isVote ? "vote" : "no_vote";
-        console.log("isVote: " + isVote);
         content = myIp+"/ip/" + content;
         $('#content').val('');
 
@@ -269,7 +267,6 @@ $.ajax({
  success: function (data) {
    data.forEach(function (msg) {
 	   if(msg.content != undefined && msg.content != ''){
-		   //console.log(msg.content);
 			 let arr = msg.content.split("/ip/");
 			 let isVote = false;
 			 
@@ -279,12 +276,10 @@ $.ajax({
 				 content = msg.content;
 			 }else{
 				 ip = arr[0];
-				 //console.log(ip);
 				 content = arr[1];
 			 }
 			 
 			 if(isVoteCheck(content)){
-				 //console.log("isVoteCheckTRUE: "+content);
 				 isVote = true;
 				 content = "투표가 생성되었습니다 - "+parseVote(content);
 			 }
@@ -299,7 +294,6 @@ $.ajax({
 		     lastTimestamp = msg.date_info; 
 	   }
 	   if(msg.vote_content !== undefined){
-		   console.log("vote:: " + msg.vote_content);
 		   addVote(msg.vote_content, msg.vote_date_info, msg.vote_total, msg.vote_id);
 	   }
 			 
