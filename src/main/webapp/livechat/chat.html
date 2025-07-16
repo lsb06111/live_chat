@@ -293,14 +293,14 @@ let minimise_sit = Array(2);
 
 $(document).ready(function () {
 	$('#chat_minimise').click(function(e){
-		$('.chat').toggle(500);
-	    $('.senders').toggle(500);
+		$('.chat').slideToggle(500);
+	    $('.senders').slideToggle(500);
 	    minimise_sit[0] = !minimise_sit[0];
 	    localStorage.setItem('minimiseSit', minimise_sit);
 	});
 	
 	$('#vote_minimise').click(function(e){
-		$('.vote').toggle(500);
+		$('.vote').slideToggle(500);
 		minimise_sit[1] = !minimise_sit[1];
 		localStorage.setItem('minimiseSit', minimise_sit);
 	});
