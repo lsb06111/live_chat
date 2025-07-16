@@ -10,6 +10,8 @@ services:
       - DB_USER=root
       - DB_PASSWORD=dltnqls11
       - DB_NAME=test_for_chat
+    volumes:
+      - ./src/main/webapp/livechat:/usr/local/tomcat/webapps/ChatApp/livechat
 
   db:
     image: mysql:8.0
